@@ -75,20 +75,21 @@ class Wechat {
             // resolve(res)
           }else{
             const res = await this.getAccessToken();
-            await this.saveAccessToken();
+            await this.saveAccessToken(res);
             return Promise.resolve(res)
             // resolve(res)
           }
         })
         .catch( async err => {
           const res = await this.getAccessToken();
-          await this.saveAccessToken();
+          await this.saveAccessToken(res);
           return Promise.resolve(res)
           // resolve(res)
         })
         .then(res => {
           this.access_token = res.access_token;
           this.expires_in = res.expires_in
+          // console.log(this.access_token)
           return Promise.resolve(res)
         })
   }
@@ -96,18 +97,16 @@ class Wechat {
 
 //获取临时票价
   getTicket(){
-    
     return new Promise(async (resolve,reject) => {
       const data = await this.fetchAccessToken();
-      const url = `${api.ticket}&access_token=${data.accessToken}`;
-
+      const url = `${api.ticket}&access_token=${data.access_token}`;
+      // console.log("url"    +url)
       rp({method:'GET',url,json:true})
       .then(res => {
-        
+        // console.log("tk"  +  res)
         resolve({
           ticket:res.ticket,
-          expires_in = Date.now() +(res.expires_in - 3000) * 1000
-
+          expires_in:Date.now() + (res.expires_in - 3000) * 1000
         })
       })
       .catch(err => {
@@ -118,6 +117,7 @@ class Wechat {
 
   saveTicket(ticket){
     ticket = JSON.stringify(ticket)
+    // console.log("ticket   " + ticket)
     return new Promise((resolve,reject) => {
       writeFile('./ticket.txt',ticket, err => {
         if(!err){
@@ -134,7 +134,7 @@ class Wechat {
   readTicket(){
     return new Promise((resolve,reject) => {
       readFile('./ticket.txt', (err,data)=> {
-        if(!err){
+        if(!err&&data){
           console.log('文件读取成功')
           data = JSON.parse(data)
           resolve(data)
@@ -168,14 +168,15 @@ class Wechat {
             // resolve(res)
           }else{
             const res = await this.getTicket();
-            await this.saveTicket();
+            await this.saveTicket(res);
             return Promise.resolve(res)
             // resolve(res)
           }
         })
         .catch( async err => {
           const res = await this.getTicket();
-          await this.saveTicket();
+          // console.log("res    " + JSON.stringify(res))
+          await this.saveTicket(res);
           return Promise.resolve(res)
           // resolve(res)
         })

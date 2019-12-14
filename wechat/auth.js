@@ -14,13 +14,14 @@ module.exports = () => {
       if(sha1Str === signature){
         res.send(echostr)
       }else{
-        res.end('err')
+        res.send('err')
       }
     } else if(req.method === 'POST'){
       if(sha1Str !== signature){
         res.send('err')
         console.log(req.query)
 
+      }else{
         const xmlData = await getUserDataAsync(req)
         const jsData = await parseXMLAsync(xmlData)
 
@@ -41,14 +42,11 @@ module.exports = () => {
           <Content><![CDATA[${content}]]></Content>
         </xml>`
 
+        console.log(message)
+        console.log(replyMessage)
+        res.send(replyMessage)
 
-
-        res.end(replyMessage)
       }
     }
-  
-  
-  
-    console.log(req.query)
   }
 }

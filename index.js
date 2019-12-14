@@ -9,12 +9,20 @@ app.set('views','./views')
 app.set('view engine','ejs')
 
 app.get('/search',async (req,res) => {
-  const noncestr = Math.random().split('.')[1]
-  const timestamp = Date.now();
-  const {ticket} =await wechat.fetchTicket();
-
+  let noncestr = Math.random().toString().split('.')[1]
+  let timestamp = Date.now();
+  let {ticket} =await wechat.fetchTicket();
+  console.log(ticket)
   res.render('search')
 })
+
+app.get('/tk',async (req,res) => {
+  let noncestr = Math.random().toString().split('.')[1]
+  let timestamp = Date.now();
+  let {ticket} =await wechat.fetchTicket();
+  console.log(ticket)
+})
+
 
 app.use(auth())
 
